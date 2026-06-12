@@ -1,16 +1,27 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { createAnonClient } from "@/shared/lib/supabase/server";
 import { KOREA_TIMEZONE } from "@/shared/config/constants";
 import type { DailyStatsResponse } from "@/shared/types/api";
+import { format, subDays } from "date-fns";
+import { ko } from "date-fns/locale";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url)
+    const EndDate = searchParams.get('endDate')
+
+    const now = new Date()
+    const kstOffset = 9 * 60 * 60 * 1000
+    const todayKST = new Date(now.getTime() + kstOffset)
+
+    const baseDate = EndDate || format(todayKST, 'yyyy-MM-dd')
+
     const supabase = createAnonClient();
 
     const { data: activeEvent } = await supabase
@@ -25,43 +36,39 @@ export async function GET() {
       const response: DailyStatsResponse = {
         items: [],
         totalCumulative: 0,
-        period: "최근 7일",
       };
       return NextResponse.json(response);
     }
 
-    const endDate = dayjs().tz(KOREA_TIMEZONE).format("YYYY-MM-DD");
-    const startDate = dayjs()
-      .tz(KOREA_TIMEZONE)
-      .subtract(6, "day")
-      .format("YYYY-MM-DD");
+    const endDate = baseDate
+    const startDate = format(subDays(new Date(baseDate), 6), 'yyyy-MM-dd')
 
     const { data: stats, error } = await supabase
       .from("daily_stats")
       .select("stat_date, count")
-      .eq("event_id", activeEvent.id)
       .gte("stat_date", startDate)
       .lte("stat_date", endDate)
+      .eq("event_id", activeEvent.id)
       .order("stat_date", { ascending: true });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    //* 7일동안 토탈 누적 
     let cumulative = 0;
     const items = (stats ?? []).map((stat) => {
       cumulative += stat.count;
       return {
         date: stat.stat_date,
-        count: stat.count,
-        cumulative,
+        count: stat.count,  //당일 인증수
+        cumulative, //오늘까지 누적 인증수
       };
     });
 
     const response: DailyStatsResponse = {
       items,
       totalCumulative: cumulative,
-      period: "최근 7일",
     };
 
     return NextResponse.json(response);

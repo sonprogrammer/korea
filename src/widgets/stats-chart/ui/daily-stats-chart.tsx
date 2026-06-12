@@ -1,15 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
-import { Card, Col, Row, Spin, Statistic, Typography } from "antd";
-import { Line } from "@ant-design/charts";
+import { useMemo, useState } from "react";
+import { Card, Col, Row, Typography } from "antd";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
+import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
+import { addDays, format, subDays } from "date-fns";
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 export function DailyStatsChart() {
-  const { data, isLoading } = useDailyStats();
+  const now = useMemo(() => new Date(), [])
+
+  const [endDate, setEndDate] = useState(new Date())
+  const formattedEndDate = useMemo(() => format(endDate, 'yyyy-MM-dd'), [endDate]);
+  const { data, isFetching } = useDailyStats(formattedEndDate);
 
   const chartData = useMemo(
     () =>
@@ -21,98 +26,84 @@ export function DailyStatsChart() {
     [data?.items],
   );
 
-  const config = useMemo(
-    () => ({
-      data: chartData,
-      xField: "date",
-      yField: "count",
-      smooth: true,
-      height: 240,
-      color: "#1a56db",
-      point: { size: 4, shape: "circle" },
-      axis: {
-        x: { labelAutoRotate: false },
-        y: { labelFormatter: (v: number) => formatNumber(v) },
-      },
-      tooltip: {
-        title: (d: { date: string }) => d.date,
-        items: [{ field: "count", name: "인증 수", valueFormatter: (v: number) => `${formatNumber(v)}명` }],
-      },
-    }),
-    [chartData],
-  );
+
+
+  const handlePrev = () => setEndDate(prev => subDays(prev, 7))
+  const handleNext = () => setEndDate(prev => {
+    const next = addDays(prev, 7)
+    return next > now ? now : next
+  })
+
+  const isPrevDisabled = useMemo(() => {
+    return !data?.items || data.items.length < 7;
+  }, [data]);
+
+  const isNextDisabled = useMemo(() => {
+    return format(endDate, 'yyyy-MM-dd') >= format(now, 'yyyy-MM-dd')
+  }, [endDate, now])
 
   const todayCount =
     data?.items.find((item) => item.date === getTodayKST())?.count ?? 0;
 
+
+
   return (
     <div className="flex flex-col gap-4">
-      <Card className="!rounded-2xl !border-0 !shadow-sm" styles={{ body: { padding: 20 } }}>
-        <Title level={5} className="!mb-1">
+      <Card className="rounded-2xl! border-0! shadow-sm!" styles={{ body: { padding: 20 } }}>
+        <Title level={5} className="mb-1!">
           일별 인증 현황
         </Title>
-        {/* <Text type="secondary" className="!text-xs">
-          {DISCLAIMER}
-        </Text> */}
 
         <Row gutter={[12, 12]} className="mt-4">
           <Col span={12}>
-            <Statistic
-              title="최근 7일 누적"
-              value={data?.totalCumulative ?? 0}
-              suffix="명"
-              valueStyle={{ fontSize: 22, color: "#1a56db" }}
-            />
+            <div className="rounded-xl bg-blue-50 px-4 py-3">
+              <p className="text-xs text-slate-500">
+                최근 7일 누적
+              </p>
+
+              <p className="mt-1 text-2xl font-black text-blue-600">
+                {formatNumber(data?.totalCumulative ?? 0)}
+                <span className="ml-1 text-sm font-medium">
+                  명
+                </span>
+              </p>
+            </div>
           </Col>
           <Col span={12}>
-            <Statistic
-              title="금일 인증 수"
-              value={todayCount}
-              suffix="명"
-              valueStyle={{ fontSize: 22 }}
-            />
+            <div className="rounded-xl bg-slate-50 px-4 py-3">
+              <p className="text-xs text-slate-500">
+                금일 인증 수
+              </p>
+
+              <p className="mt-1 text-2xl font-black text-slate-900">
+                {formatNumber(todayCount)}
+                <span className="ml-1 text-sm font-medium">
+                  명
+                </span>
+              </p>
+            </div>
           </Col>
         </Row>
       </Card>
 
-      <Card className="!rounded-2xl !border-0 !shadow-sm" styles={{ body: { padding: 16 } }}>
-        <Title level={5} className="!mb-3">
-          최근 7일 추이
-        </Title>
-        <Spin spinning={isLoading}>
-          {chartData.length > 0 ? (
-            <Line {...config} />
-          ) : (
-            <div className="flex h-[240px] items-center justify-center text-gray-400">
-              통계 데이터가 없습니다.
-            </div>
-          )}
-        </Spin>
+      <Card className="rounded-2xl! border-0! shadow-sm!" styles={{ body: { padding: 20 } }}>
+        <div className="flex justify-between items-center mb-4">
+          <Title level={5} className="m-0!">최근 7일 기록</Title>
+          <span className="text-xs text-slate-400 font-medium">(단위: 천 명)</span>
+        </div>
+
+        <div className={`transition-opacity ${isFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+
+          <DailyStatsLineChart
+            data={chartData}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+            isNextDisabled={isNextDisabled}
+            isPrevDisabled={isPrevDisabled}
+          />
+        </div>
       </Card>
 
-      {data?.items && data.items.length > 0 && (
-        <Card className="!rounded-2xl !border-0 !shadow-sm" styles={{ body: { padding: 16 } }}>
-          <Title level={5} className="!mb-3">
-            일별 상세
-          </Title>
-          <div className="flex flex-col gap-2">
-            {data.items.map((item) => (
-              <div
-                key={item.date}
-                className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2"
-              >
-                <Text>{formatChartDate(item.date)}</Text>
-                <div className="text-right">
-                  <Text strong>{formatNumber(item.count)}명</Text>
-                  <Text type="secondary" className="!ml-2 !text-xs">
-                    누적 {formatNumber(item.cumulative)}명
-                  </Text>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-    </div>
+    </div >
   );
 }

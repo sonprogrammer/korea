@@ -12,7 +12,6 @@ export interface DailyStatItem {
 export interface DailyStatsResponse {
   items: DailyStatItem[];
   totalCumulative: number;
-  period: string;
 }
 
 export interface AttendanceRequest {

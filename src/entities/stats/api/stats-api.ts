@@ -8,6 +8,6 @@ export async function fetchTodayStats(): Promise<TodayStatsResponse> {
   return apiFetch<TodayStatsResponse>("/api/stats/today");
 }
 
-export async function fetchDailyStats(): Promise<DailyStatsResponse> {
-  return apiFetch<DailyStatsResponse>("/api/stats/daily");
+export async function fetchDailyStats(endDate: string): Promise<DailyStatsResponse> {
+  return apiFetch<DailyStatsResponse>(`/api/stats/daily?endDate=${endDate}`);
 }

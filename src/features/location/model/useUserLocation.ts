@@ -12,12 +12,17 @@ export function useUserLocation() {
 
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition((pos) => {
+        // * 움직이면서 위치 갱신
+        const watchId = navigator.geolocation.watchPosition((pos) => {
             setLocation({
                 lat: pos.coords.latitude,
                 lng: pos.coords.longitude
             })
         })
+        
+        return () => {
+            navigator.geolocation.clearWatch(watchId)
+        }
     }, [])
 
 
