@@ -5,7 +5,6 @@ import { Card, Col, Row, Spin, Statistic, Typography } from "antd";
 import { Line } from "@ant-design/charts";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
-import { DISCLAIMER } from "@/shared/config/constants";
 
 const { Text, Title } = Typography;
 
@@ -52,9 +51,9 @@ export function DailyStatsChart() {
         <Title level={5} className="!mb-1">
           일별 인증 현황
         </Title>
-        <Text type="secondary" className="!text-xs">
+        {/* <Text type="secondary" className="!text-xs">
           {DISCLAIMER}
-        </Text>
+        </Text> */}
 
         <Row gutter={[12, 12]} className="mt-4">
           <Col span={12}>
