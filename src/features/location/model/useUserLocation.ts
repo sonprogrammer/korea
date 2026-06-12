@@ -5,25 +5,21 @@ export function useUserLocation() {
     const [location, setLocation] = useState<{
         lat: number
         lng: number
-    } | null>(null)
+    } | null>
+    (null)
 //     ({lat: 37.5111,
 //   lng: 127.0728})
 
-navigator.geolocation.getCurrentPosition(
-  console.log,
-  console.error
-)
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((pos) => {
-            console.log('posi', pos)
             setLocation({
                 lat: pos.coords.latitude,
                 lng: pos.coords.longitude
             })
         })
     }, [])
-    console.log('location', location)
+
 
     return { location }
     

@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
 
 interface AttendanceButtonProps {
   onClick: () => void;
@@ -21,13 +20,12 @@ export function AttendanceButton({
           type="default"
           size="large"
           block
-          icon={<CheckCircleOutlined />}
           loading={loading}
           disabled={disabled}
           onClick={onClick}
           className="h-14! rounded-full! text-base! font-black! shadow-lg! bg-red-500! text-white!"
         >
-          참여 인증
+          🇰🇷 참여 인증 🇰🇷
         </Button>
       </div>
     </div>

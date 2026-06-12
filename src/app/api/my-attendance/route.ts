@@ -41,7 +41,7 @@ export async function GET() {
         typeof record.events === "object" &&
         "title" in record.events
           ? (record.events as { title: string }).title
-          : "집회";
+          : "운동";
 
       return {
         id: record.id,

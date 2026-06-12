@@ -47,7 +47,7 @@ export function getCurrentPosition(): Promise<GeolocationResult> {
           case error.POSITION_UNAVAILABLE:
             reject(
               new GeolocationError(
-                "위치 정보를 가져올 수 없습니다.",
+                "위치 정보를 가져올 수 없습니다. GPS가 켜져있는지 확인해주세요.",
                 "UNAVAILABLE",
               ),
             );

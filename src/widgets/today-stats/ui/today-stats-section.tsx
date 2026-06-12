@@ -1,17 +1,18 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { Button, Card, Spin, Statistic, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { useTodayStats } from "@/entities/stats/api/use-today-stats";
 import { formatNumber, formatTodayDate } from "@/shared/lib/format";
 import { Clock } from "@/entities/clock/ui/Clock";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale"
 
-const { Text, Title } = Typography;
 
 export const TodayStatsSection = memo(function TodayStatsSection() {
-  const { data, isLoading, isFetching, refetch } = useTodayStats();
+  const { data, isLoading, isFetching, refetch, dataUpdatedAt } = useTodayStats();
 
 
 
@@ -24,44 +25,55 @@ export const TodayStatsSection = memo(function TodayStatsSection() {
   }, [refetch]);
 
   return (
-    <Card
-      className={`rounded-2xl! border-0! shadow-sm! ${isFetching ? 'bg-black/30!' : ''}`}
-    >
-      <div className=" flex items-start justify-between gap-2">
+    <Card className="overflow-hidden rounded-2xl! border-0! shadow-sm!">
+      <div className="flex items-start justify-between">
         <div>
-          <div className="flex gap-3 items-center">
-
-            <Text type="secondary" className="text-xs!">
-              {formatTodayDate()}
-            </Text>
-            <Text type="secondary" className="text-xs!">
-              <Clock />
-            </Text>
-          </div>
-          <Title level={5} className="mb-0! mt-1!">
+          <p className="text-xs font-medium text-slate-500">
             실시간 인증 현황
-          </Title>
+          </p>
+
+          {isLoading ? (
+            <>
+              <div className="mt-2 h-10 w-32 animate-pulse rounded-lg bg-slate-200" />
+              <div className="mt-2 h-4 w-20 animate-pulse rounded bg-slate-200" />
+            </>
+          ) : (
+            <>
+              <p className="mt-1 text-4xl font-black tracking-tight text-blue-600">
+                {formatNumber(data?.count ?? 0)}
+                <span className="ml-1 text-xl font-semibold">명</span>
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                오늘 인증된 참여자 수
+              </p>
+            </>
+          )}
         </div>
-        <Button
-          type="default"
-          icon={<ReloadOutlined spin={isFetching} />}
-          onClick={() => handleRefresh()}
-          aria-label="새로고침"
-          title="새로고침"
-        />
+
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-xs text-slate-400">
+            {formatTodayDate()}
+          </span>
+          <span className="text-[11px] text-slate-700 text-semibold">
+            갱신 {format(dataUpdatedAt, 'HH:mm:ss', {locale: ko})}
+          </span>
+
+          <Button
+            shape="circle"
+            icon={<ReloadOutlined spin={isFetching} />}
+            onClick={handleRefresh}
+          />
+        </div>
       </div>
 
-      <Spin spinning={isLoading}>
-        <Statistic
-          value={data?.count ?? 0}
-          formatter={(value) => `${formatNumber(Number(value))}명`}
-          valueStyle={{ fontSize: 36, fontWeight: 700, color: "#1a56db" }}
-        />
-        <Text type="secondary" className="mt-2! block! text-xs!">
-          실제 인원 수가 아닌, GPS 위치 인증을 통과한 참여 인증 수입니다.<br/>
-          {'(일 1회만 클릭가능)'}
-        </Text>
-      </Spin>
+      <div className="mt-4 rounded-xl bg-slate-50 px-3 py-2">
+        <p className="text-xs leading-relaxed text-slate-500">
+          실제 인원 수가 아닌 GPS 위치 인증을 통과한 참여 인증 수입니다.
+          <br />
+          1인당 하루 1회만 인증 가능합니다.
+        </p>
+      </div>
     </Card>
   );
 });

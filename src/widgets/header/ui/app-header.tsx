@@ -17,9 +17,9 @@ export function AppHeader() {
         <Link href="/">
           <Text
             strong
-            className="text-3xl! font-black! bg-linear-to-r! from-red-500! via-white/40! to-blue-500! bg-clip-text! text-transparent!"
+            className="uppercase! text-3xl! font-black! bg-linear-to-r! from-red-500! via-white/40! to-blue-500! bg-clip-text! text-transparent!"
           >
-            대한민국
+            korea
           </Text>
         </Link>
         {user ? (

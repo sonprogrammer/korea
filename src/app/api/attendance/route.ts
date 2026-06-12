@@ -5,6 +5,7 @@ import { isWithinRadius } from "@/shared/lib/haversine";
 import type { AttendanceRequest, AttendanceResponse } from "@/shared/types/api";
 
 export async function POST(request: Request) {
+  // console.log('request', request)
   try {
     const user = await getSessionFromCookies();
 
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
     if (eventError || !event) {
       return NextResponse.json(
-        { error: "유효하지 않은 집회입니다.", code: "EVENT_NOT_FOUND" },
+        { error: "유효하지 않은 운동.", code: "EVENT_NOT_FOUND" },
         { status: 404 },
       );
     }
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
     if (!withinRadius) {
       return NextResponse.json(
         {
-          error: "집회 위치 반경 내에서만 인증 가능합니다.",
+          error: "운동 위치 반경 내에서만 인증 가능합니다.",
           code: "OUT_OF_RADIUS",
         },
         { status: 400 },

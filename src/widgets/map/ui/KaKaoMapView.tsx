@@ -15,7 +15,7 @@ export function KaKaoMapView() {
   if (!location) return <div>위치 로딩중...</div>
 
   const moveToCurrentLocation = () => {
-    if(!mapRef.current) return
+    if (!mapRef.current) return
     mapRef.current.setCenter(new window.kakao.maps.LatLng(location.lat, location.lng))
   }
 
@@ -27,7 +27,7 @@ export function KaKaoMapView() {
       : `${distance.toFixed(2)}km`;
 
   return (
-    <div className="w-full max-w-xl mx-auto overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="w-full  overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       {/* //*상단 정보 영역 */}
       <div className="flex items-center justify-between px-4 py-3">
@@ -36,26 +36,33 @@ export function KaKaoMapView() {
           <p className="mt-1 text-2xl font-bold text-slate-900">
             {distanceText}
           </p>
-          <p className="mt-1 text-xs text-slate-500">
-            반경 <span className="font-semibold text-emerald-600">500m</span> 이내에서 인증할 수 있습니다.
-          </p>
         </div>
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-medium ${isInZone
-            ? "bg-emerald-100 text-emerald-700"
-            : "bg-red-100 text-red-700"
-            }`}
-        >
-          {isInZone ? "인증 가능 구역" : "인증 구역 밖"}
-        </span>
+        <div className="flex flex-col items-end">
+
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-medium ${isInZone
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-red-100 text-red-700"
+              }`}
+          >
+            {isInZone ? "인증 가능 구역" : "인증 구역 밖"}
+          </span>
+
+          {!isInZone && (
+            <span className="mt-1 text-[11px] text-slate-500">
+              반경 500m 이내에서만 인증 가능
+            </span>
+          )}
+
+        </div>
 
       </div>
 
       {/* 지도 */}
-      <div className="relative">
+      <div className="relative px-2">
         <Map
           center={location}
-          style={{ width: "100%", height: 380 }}
+          style={{ width: "100%", height: 260, borderRadius: '20px' }}
           level={5}
           onCreate={(map) => {
             mapRef.current = map
@@ -77,11 +84,11 @@ export function KaKaoMapView() {
         </Map>
 
         <button
-    onClick={moveToCurrentLocation}
-    className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-105"
-  >
-    <EnvironmentOutlined className="text-lg text-blue-600" />
-  </button>
+          onClick={moveToCurrentLocation}
+          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-105"
+        >
+          <EnvironmentOutlined className="text-lg text-blue-600" />
+        </button>
 
       </div>
 

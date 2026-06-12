@@ -19,7 +19,7 @@ export function useAttendanceCheck(eventId: string | undefined) {
 
   const executeCheck = useCallback(async () => {
     if (!eventId) {
-      message.error("현재 진행 중인 집회가 없습니다.");
+      message.error("현재 진행 중인 운동이 없습니다.");
       return;
     }
 
@@ -33,6 +33,7 @@ export function useAttendanceCheck(eventId: string | undefined) {
 
     try {
       const position = await getCurrentPosition();
+
 
       await submitAttendance({
         eventId,
@@ -62,7 +63,7 @@ export function useAttendanceCheck(eventId: string | undefined) {
             message.warning("오늘은 이미 인증하셨습니다.");
             break;
           case "OUT_OF_RADIUS":
-            message.error("집회 위치 반경 내에서만 인증 가능합니다.");
+            message.error("위치 반경 내에서만 인증 가능합니다.");
             break;
           default:
             message.error(error.message);
