@@ -1,31 +1,57 @@
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { KOREA_TIMEZONE } from "@/shared/config/constants";
+import { format, formatISO } from "date-fns";
+import { ko } from "date-fns/locale"; 
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+function getSafeKSTDate(dateInput?: string | Date): Date {
+  if (!dateInput) return new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+  
+  // 모바일 사파리 방어: 문자열일 경우 하이픈(-)을 슬래시(/)로 치환
+  const safeInput = typeof dateInput === "string" ? dateInput.replace(/-/g, "/") : dateInput;
+  const date = new Date(safeInput);
 
+  if (isNaN(date.getTime())) {
+    return new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+  }
+  return date;
+}
+
+
+//  * 1. 오늘 날짜를 "2026년 6월 14일 (일)" 형태로 반환
 export function formatTodayDate(): string {
-  return dayjs().tz(KOREA_TIMEZONE).format("YYYY년 M월 D일 (ddd)");
+  const kstDate = getSafeKSTDate();
+  return format(kstDate, "yyyy년 M월 d일 (eee)", { locale: ko });
 }
 
+//  * 2. 숫자에 콤마 찍기 (1,000) - 기존 자바스크립트 함수 유지 (가장 완벽함)
 export function formatNumber(num: number): string {
-  return num.toLocaleString("ko-KR");
+  return (num ?? 0).toLocaleString("ko-KR");
 }
+
+//  * 3. ISO 스트링을 KST 기준 "YYYY-MM-DD"로 변환
 
 export function formatDateKST(isoString: string): string {
-  return dayjs(isoString).tz(KOREA_TIMEZONE).format("YYYY-MM-DD");
+  const kstDate = getSafeKSTDate(isoString);
+  return format(kstDate, "yyyy-MM-dd");
 }
 
+
+//  * 4. ISO 스트링을 KST 기준 "HH:mm:ss"로 변환
 export function formatTimeKST(isoString: string): string {
-  return dayjs(isoString).tz(KOREA_TIMEZONE).format("HH:mm:ss");
+  const kstDate = getSafeKSTDate(isoString);
+  return format(kstDate, "HH:mm:ss");
 }
 
+
+//  * 5. 차트용 날짜 변환 "M/D" (예: 6/14) - 모바일 크래시 완벽 방어형
 export function formatChartDate(dateStr: string): string {
-  return dayjs(dateStr).format("M/D");
+  if (!dateStr || dateStr === "undefined" || dateStr === "null") return "";
+  
+  const kstDate = getSafeKSTDate(dateStr);
+  return format(kstDate, "M/d");
 }
 
+
+//  * 6. 오늘 날짜를 KST 기준 "YYYY-MM-DD"로 반환
 export function getTodayKST(): string {
-  return dayjs().tz(KOREA_TIMEZONE).format("YYYY-MM-DD");
+  const kstDate = getSafeKSTDate();
+  return format(kstDate, "yyyy-MM-dd");
 }

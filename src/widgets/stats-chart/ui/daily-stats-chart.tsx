@@ -12,8 +12,18 @@ const { Title } = Typography;
 export function DailyStatsChart() {
   const now = useMemo(() => new Date(), [])
 
-  const [endDate, setEndDate] = useState(new Date())
-  const formattedEndDate = useMemo(() => format(endDate, 'yyyy-MM-dd'), [endDate]);
+const [endDate, setEndDate] = useState(() => new Date());
+  const formattedEndDate = useMemo(() => {
+  try {
+
+    if (isNaN(endDate.getTime())) {
+      return format(new Date(), 'yyyy-MM-dd');
+    }
+    return format(endDate, 'yyyy-MM-dd');
+  } catch (e) {
+    return format(new Date(), 'yyyy-MM-dd'); 
+  }
+}, [endDate]);
   const { data, isFetching } = useDailyStats(formattedEndDate);
 
   const chartData = useMemo(
