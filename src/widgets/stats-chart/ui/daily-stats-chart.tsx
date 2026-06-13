@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, Col, Row, Typography } from "antd";
+import { Card, Col, Row, Typography} from "antd";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
 import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
