@@ -31,7 +31,7 @@ export function DailyStatsLineChart({ data, handleNext, handlePrev, isNextDisabl
                         tick={{ fontSize: 12, fill: "#64748b" }}
                         // axisLine={false}
                         tickLine={false}
-                        tickFormatter={(v) => format(new Date(v), 'MM.dd')}
+                        tickFormatter={(v) => v.replace(/\//g, '.')}
                         interval="preserveStartEnd"
                     />
                     <YAxis
@@ -47,7 +47,9 @@ export function DailyStatsLineChart({ data, handleNext, handlePrev, isNextDisabl
                             if (active && payload && payload.length && label) {
                                 const rawValue = Number(payload[0].value);
                                 const formattedValue = `${(rawValue / 1000).toLocaleString(undefined, { minimumFractionDigits: 3 })}명`;
-                                const formattedDate = format(new Date(label), 'M월 d일', { locale: ko });
+                                const safeLabel = String(label);
+                                const [month, day] = safeLabel.split('/')
+                                const formattedDate = month && day ? `${month}월 ${day}일` : label;
                                 const dataName = payload[0].name;
 
                                 return (
@@ -76,32 +78,30 @@ export function DailyStatsLineChart({ data, handleNext, handlePrev, isNextDisabl
             </ResponsiveContainer>
 
             <div className="flex gap-2 justify-end mt-2">
-                <button 
-                    onClick={handlePrev} 
+                <button
+                    onClick={handlePrev}
                     disabled={isPrevDisabled}
-                    className={`flex items-center justify-center px-3 py-1 text-xs rounded-full border ${
-                        isPrevDisabled 
-                        ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed' 
-                        : 'bg-white text-gray-600 border-gray-200 cursor-pointer hover:bg-gray-50'
-                    }`}
+                    className={`flex items-center justify-center px-3 py-1 text-xs rounded-full border ${isPrevDisabled
+                            ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                            : 'bg-white text-gray-600 border-gray-200 cursor-pointer hover:bg-gray-50'
+                        }`}
                 >
                     이전
                 </button>
-                
-                <button 
-                    onClick={handleNext} 
-                    disabled={isNextDisabled} 
-                    className={`flex items-center justify-center px-3 py-1 text-xs rounded-full border ${
-                        isNextDisabled 
-                        ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed' 
-                        : 'bg-white text-gray-600 border-gray-200 cursor-pointer hover:bg-gray-50'
-                    }`}
+
+                <button
+                    onClick={handleNext}
+                    disabled={isNextDisabled}
+                    className={`flex items-center justify-center px-3 py-1 text-xs rounded-full border ${isNextDisabled
+                            ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                            : 'bg-white text-gray-600 border-gray-200 cursor-pointer hover:bg-gray-50'
+                        }`}
                 >
                     다음
                 </button>
             </div>
 
-            <StatsTopRecord 
+            <StatsTopRecord
 
             />
 
