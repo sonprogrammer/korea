@@ -13,7 +13,7 @@ import { ko } from "date-fns/locale"
 
 export const TodayStatsSection = memo(function TodayStatsSection() {
   const { data, isLoading, isFetching, refetch, dataUpdatedAt } = useTodayStats();
-
+console.log("📸 [TodayStatsSection] 날짜 파싱 시도");
 
 
   const handleRefresh = useCallback(async () => {

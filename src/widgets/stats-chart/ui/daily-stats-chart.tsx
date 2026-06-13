@@ -36,16 +36,21 @@ export function DailyStatsChart() {
   //   }
   // }, [endDate]);
 
-  const formattedEndDate = useMemo(() => {
-    try {
-      if (!endDate || isNaN(endDate.getTime())) {
-        return getTodayKST();
-      }
-      return format(endDate, 'yyyy-MM-dd');
-    } catch (e) {
+const formattedEndDate = useMemo(() => {
+  try {
+    console.log("📸 [formattedEndDate] 연산 시 작 - 현재 endDate 상태:", endDate);
+    if (!endDate || isNaN(endDate.getTime())) {
+      console.log("⚠️ [formattedEndDate] endDate가 가짜 날짜임!");
       return getTodayKST();
     }
-  }, [endDate]);
+    const res = format(endDate, 'yyyy-MM-dd');
+    console.log("✅ [formattedEndDate] format 완료:", res);
+    return res;
+  } catch (e) {
+    console.error("❌ [formattedEndDate] 연산 중 크래시:", e);
+    return getTodayKST();
+  }
+}, [endDate]);
 
   const { data, isFetching } = useDailyStats(formattedEndDate);
 
@@ -72,6 +77,7 @@ export function DailyStatsChart() {
   }, [data]);
 
   const isNextDisabled = useMemo(() => {
+    console.log("📸 [isNextDisabled] 체크 시작 - endDate:", endDate, "now:", now);
     return !data || !data.hasNext;
 
   }, [data])

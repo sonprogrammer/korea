@@ -43,10 +43,22 @@ export function formatTimeKST(isoString: string): string {
 
 //  * 5. 차트용 날짜 변환 "M/D" (예: 6/14) - 모바일 크래시 완벽 방어형
 export function formatChartDate(dateStr: string): string {
+  // 🔍 1번 감시 카메라
+  console.log("📸 [formatChartDate] 입력된 값:", dateStr, typeof dateStr);
+  
   if (!dateStr || dateStr === "undefined" || dateStr === "null") return "";
   
-  const kstDate = getSafeKSTDate(dateStr);
-  return format(kstDate, "M/d");
+  try {
+    const kstDate = getSafeKSTDate(dateStr);
+    const result = format(kstDate, "M/d");
+    
+    // 🔍 2번 감시 카메라
+    console.log("✅ [formatChartDate] 변환 성공:", result);
+    return result;
+  } catch (error) {
+    console.error("❌ [formatChartDate] 여기서 터짐! 에러:", error);
+    return "";
+  }
 }
 
 
