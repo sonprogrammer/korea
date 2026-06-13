@@ -36,7 +36,7 @@ export function HomeGuidModal({ isOpen, onClose }: HomeGuideModalProps) {
 
         <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl bg-gray-100">
           <Image
-            src="/done.png"
+            src="/done.PNG"
             alt="president"
             fill
             className="object-cover"
