@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, Col, Row, Typography} from "antd";
+import { Card, Col, Row, Typography } from "antd";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
 import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
@@ -94,13 +94,19 @@ export function DailyStatsChart() {
 
         <div className={`transition-opacity ${isFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
 
-          <DailyStatsLineChart
-            data={chartData}
-            handleNext={handleNext}
-            handlePrev={handlePrev}
-            isNextDisabled={isNextDisabled}
-            isPrevDisabled={isPrevDisabled}
-          />
+          {chartData && chartData.length > 0 ? (
+            <DailyStatsLineChart
+              data={chartData}
+              handleNext={handleNext}
+              handlePrev={handlePrev}
+              isNextDisabled={isNextDisabled}
+              isPrevDisabled={isPrevDisabled}
+            />
+          ) : (
+            <div className="flex h-48 items-center justify-center text-slate-400 text-sm">
+              인증 기록 데이터를 불러오는 중입니다...
+            </div>
+          )}
         </div>
       </Card>
 
