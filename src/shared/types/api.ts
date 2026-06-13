@@ -12,6 +12,8 @@ export interface DailyStatItem {
 export interface DailyStatsResponse {
   items: DailyStatItem[];
   totalCumulative: number;
+  hasPrev: boolean
+  hasNext: boolean
 }
 
 export interface AttendanceRequest {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Card, Col, Row, Typography } from "antd";
+import { Card, Col, Row, Spin, Typography } from "antd";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
 import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
@@ -68,17 +68,24 @@ export function DailyStatsChart() {
   })
 
   const isPrevDisabled = useMemo(() => {
-    return !data?.items || data.items.length < 7;
+    return !data || !data.hasPrev
   }, [data]);
 
   const isNextDisabled = useMemo(() => {
-    return format(endDate, 'yyyy-MM-dd') >= format(now, 'yyyy-MM-dd')
-  }, [endDate, now])
+    return !data || !data.hasNext;
+
+  }, [data])
 
   const todayCount =
     data?.items.find((item) => item.date === getTodayKST())?.count ?? 0;
 
-
+  if (!isMounted || isFetching) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Spin size="large" tip="통계 데이터를 불러오는 중..." />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">

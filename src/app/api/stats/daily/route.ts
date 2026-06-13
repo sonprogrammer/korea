@@ -36,6 +36,8 @@ export async function GET(request: NextRequest) {
       const response: DailyStatsResponse = {
         items: [],
         totalCumulative: 0,
+        hasPrev: false,
+        hasNext: false
       };
       return NextResponse.json(response);
     }
@@ -55,6 +57,22 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const { data: prevCheck } = await supabase
+      .from("daily_stats")
+      .select("stat_date")
+      .lt("stat_date", startDate)
+      .eq("event_id", activeEvent.id)
+      .limit(1)
+      .maybeSingle();
+
+    const { data: nextCheck } = await supabase
+      .from("daily_stats")
+      .select("stat_date")
+      .gt("stat_date", endDate)
+      .eq("event_id", activeEvent.id)
+      .limit(1)
+      .maybeSingle();
+
     //* 7일동안 토탈 누적 
     let cumulative = 0;
     const items = (stats ?? []).map((stat) => {
@@ -69,6 +87,8 @@ export async function GET(request: NextRequest) {
     const response: DailyStatsResponse = {
       items,
       totalCumulative: cumulative,
+      hasPrev: !!prevCheck,
+      hasNext: !!nextCheck,
     };
 
     return NextResponse.json(response);
