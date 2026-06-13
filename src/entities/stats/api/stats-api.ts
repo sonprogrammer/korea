@@ -1,4 +1,5 @@
 import { apiFetch } from "@/shared/api/fetcher";
+import { getTodayKST } from "@/shared/lib/format";
 import type {
   DailyStatsResponse,
   TodayStatsResponse,
@@ -9,5 +10,6 @@ export async function fetchTodayStats(): Promise<TodayStatsResponse> {
 }
 
 export async function fetchDailyStats(endDate: string): Promise<DailyStatsResponse> {
-  return apiFetch<DailyStatsResponse>(`/api/stats/daily?endDate=${endDate}`);
+  const finalEndDate = !endDate || endDate.includes("NaN") ? getTodayKST() : endDate;
+  return apiFetch<DailyStatsResponse>(`/api/stats/daily?endDate=${finalEndDate}`);
 }
