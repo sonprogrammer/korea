@@ -49,6 +49,8 @@ export function HomeGuidModal({ isOpen, onClose }: HomeGuideModalProps) {
           반국가 세력 척결을 위한 민주화운동
         </Title>
         <Text type="secondary" className="mb-6 block text-sm leading-relaxed!">
+          언론을 장악하여 시민들의 민주화운동을 폄훼하여 시민들의 뜻을 전 세계에 알리기위해<br />
+          잠실로 가서 꼭 참여 인증 부탁드립니다<br/>
           입법, 행정을 넘어서 검창청을 폐지하여 사법권까지 장악했는데 선관위는 왜 해체 못시킬까요? <br />
           우리는 다 알고 있습니다. 지금은 그들이 저희를 개돼지로 보고 있지만<br />
           우리 모두 힘을 합쳐 반국가 세력을 척결을 위해 나서야 합니다. 멸공
