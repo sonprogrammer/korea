@@ -1,8 +1,5 @@
 'use client'
-
-import { format } from "date-fns";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ko } from "date-fns/locale";
 import { StatsTopRecord } from "@/entities/stats/ui/StatsTopRecord";
 
 interface DailyStatsData {

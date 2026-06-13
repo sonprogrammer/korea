@@ -11,12 +11,10 @@ const { Title } = Typography;
 
 export function DailyStatsChart() {
   const [isMounted, setIsMounted] = useState(false);
-  // const now = useMemo(() => new Date(), [])
   const now = useMemo(() => {
     return new Date(getTodayKST().replace(/-/g, "/"));
   }, []);
 
-  // const [endDate, setEndDate] = useState(() => new Date());
   const [endDate, setEndDate] = useState<Date>(() => {
     return new Date(getTodayKST().replace(/-/g, "/"))
   });
@@ -24,30 +22,15 @@ export function DailyStatsChart() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  // const formattedEndDate = useMemo(() => {
-  //   try {
-
-  //     if (isNaN(endDate.getTime())) {
-  //       return format(new Date(), 'yyyy-MM-dd');
-  //     }
-  //     return format(endDate, 'yyyy-MM-dd');
-  //   } catch (e) {
-  //     return format(new Date(), 'yyyy-MM-dd');
-  //   }
-  // }, [endDate]);
 
 const formattedEndDate = useMemo(() => {
   try {
-    console.log("📸 [formattedEndDate] 연산 시 작 - 현재 endDate 상태:", endDate);
     if (!endDate || isNaN(endDate.getTime())) {
-      console.log("⚠️ [formattedEndDate] endDate가 가짜 날짜임!");
       return getTodayKST();
     }
     const res = format(endDate, 'yyyy-MM-dd');
-    console.log("✅ [formattedEndDate] format 완료:", res);
     return res;
   } catch (e) {
-    console.error("❌ [formattedEndDate] 연산 중 크래시:", e);
     return getTodayKST();
   }
 }, [endDate]);
@@ -77,7 +60,6 @@ const formattedEndDate = useMemo(() => {
   }, [data]);
 
   const isNextDisabled = useMemo(() => {
-    console.log("📸 [isNextDisabled] 체크 시작 - endDate:", endDate, "now:", now);
     return !data || !data.hasNext;
 
   }, [data])
