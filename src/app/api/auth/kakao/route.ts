@@ -1,18 +1,24 @@
-import { NextResponse } from "next/server";
-import { buildKakaoAuthorizeUrl } from "@/shared/lib/auth/kakao";
-import {
-  createOAuthState,
-  setOAuthStateCookie,
-} from "@/shared/lib/auth/session";
+import { supabaseServer } from "@/shared/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const next = searchParams.get("next") ?? "/";
-  const state = createOAuthState();
 
-  const authorizeUrl = buildKakaoAuthorizeUrl(state);
-  const response = NextResponse.redirect(authorizeUrl);
 
-  setOAuthStateCookie(response, `${state}:${encodeURIComponent(next)}`);
-  return response;
+export async function GET(req: NextRequest){
+  const { searchParams, origin} = new URL(req.url)
+  const code = searchParams.get('code')
+  const next =searchParams.get('next') ?? '/'
+  
+  if(code){ 
+    const res = NextResponse.redirect(`${origin}${next}`)
+    const supabase = await supabaseServer()
+
+    const { error} = await supabase.auth.exchangeCodeForSession(code)
+
+    if(!error){
+      return res
+    }
+
+    return NextResponse.redirect(`${origin}/`)
+  }
+  
 }

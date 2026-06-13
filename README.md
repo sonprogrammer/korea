@@ -9,65 +9,22 @@
 - Next.js 15 (App Router)
 - TypeScript
 - Ant Design + TailwindCSS
-- Supabase (Database only)
-- 카카오 OAuth (Authorization Code Flow, 직접 구현)
-- JWT 세션 쿠키
+- Supabase
+- 카카오 OAuth
 - TanStack Query (React Query)
 - Zustand
-- dayjs
+- date-fns
 
-## 시작하기
 
-### 1. 환경 변수 설정
-
-```bash
-cp .env.example .env.local
-```
-
-`.env.local`에 아래 값을 입력하세요.
-
-| 변수 | 설명 |
-|------|------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
-| `SESSION_SECRET` | JWT 서명용 시크릿 (32자 이상) |
-| `KAKAO_REST_API_KEY` | 카카오 REST API 키 |
-| `KAKAO_REDIRECT_URI` | `http://localhost:3000/api/auth/kakao/callback` |
-| `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` |
-
-### 2. Supabase 설정
-
-1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
-2. SQL Editor에서 `supabase/schema.sql` 실행
-3. **Supabase Auth Kakao Provider는 사용하지 않습니다**
-
-### 3. 카카오 개발자 콘솔 설정
-
-1. [Kakao Developers](https://developers.kakao.com)에서 앱 생성
-2. **카카오 로그인** 활성화
-3. Redirect URI: `http://localhost:3000/api/auth/kakao/callback`
-4. 동의 항목: **닉네임(profile_nickname)** 만 필수 설정 (이메일, 프로필 사진 불필요)
-5. REST API 키를 `KAKAO_REST_API_KEY`에 설정
-
-### 4. 개발 서버 실행
-
-```bash
-npm install
-npm run dev
-```
-
-http://localhost:3000 에서 확인
 
 ## 인증 흐름
 
 ```
 [로그인 클릭]
-  → GET /api/auth/kakao (카카오 authorize 리다이렉트, scope=profile_nickname)
+  → GET /api/auth/kakao
   → 카카오 로그인
-  → GET /api/auth/kakao/callback (code → access_token → 사용자 정보)
+  → GET /api/auth/kakao (code → access_token → 사용자 정보)
   → profiles 테이블에 kakao_id + nickname 저장/갱신
-  → JWT 세션 쿠키 발급
   → 원래 페이지로 리다이렉트
 ```
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { createAnonClient } from "@/shared/lib/supabase/server";
+import { supabaseServer } from "@/shared/lib/supabase/server";
 import { KOREA_TIMEZONE } from "@/shared/config/constants";
 import type { DailyStatsResponse } from "@/shared/types/api";
 import { format, subDays } from "date-fns";
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     const baseDate = EndDate || format(todayKST, 'yyyy-MM-dd')
 
-    const supabase = createAnonClient();
+    const supabase = await supabaseServer()
 
     const { data: activeEvent } = await supabase
       .from("events")

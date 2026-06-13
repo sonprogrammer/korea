@@ -8,8 +8,8 @@ const { Header } = Layout;
 const { Text } = Typography;
 
 export function AppHeader() {
-  const user = useAuthStore((s) => s.user);
-  const signOut = useAuthStore((s) => s.signOut);
+  const user = useAuthStore((s) => s.user)
+  const signOut = useAuthStore((s) => s.signOut)
 
   return (
     <Header className="sticky! top-0! z-50! flex! h-auto! flex-col! gap-3! bg-white! px-4! py-3! leading-normal! shadow-sm">
@@ -25,7 +25,7 @@ export function AppHeader() {
         {user ? (
           <div className="flex items-center gap-1">
             <Text type="secondary" className="text-xs!">
-              {user.nickname}
+              {user.nickname || "유저"}
             </Text>
             <Button type="link" size="small" onClick={() => void signOut()}>
               로그아웃

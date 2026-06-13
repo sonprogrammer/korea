@@ -7,6 +7,22 @@ export const metadata: Metadata = {
   title: "자유민주화운동 | GPS 위치 인증 참여 서비스",
   description:
     "잠실 현장 GPS 위치 인증을 통한 참여 인증 서비스. 실제 인원 수가 아닌 위치 인증 통과 수만 집계합니다.",
+  openGraph: {
+    title: '자유민주화운동',
+    description: '잠실 현장 GPS 위치 인증을 통한 참여 인증 서비스. 실제 인원 수가 아닌 위치 인증 통과 수만 집계합니다.',
+    url: '자유민주화운동',
+    siteName: '자유민주화운동',
+    images: [
+      {
+        url: '/flag.PNG',
+        width: 1200,
+        height: 630,
+        alt: '태극기'
+      }
+    ],
+    locale: 'ko_KR',
+    type: 'website'
+  },
 };
 
 export const viewport: Viewport = {
@@ -23,6 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <link rel='icon' href='/flag.PNG' />
+      </head>
       <body className="antialiased">
         <Providers>
             {children}

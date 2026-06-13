@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { createAnonClient } from "@/shared/lib/supabase/server";
+import { supabaseServer } from "@/shared/lib/supabase/server";
 import { getTodayKST } from "@/shared/lib/format";
 import type { TodayStatsResponse } from "@/shared/types/api";
 
 export async function GET() {
   try {
-    const supabase = createAnonClient();
+    const supabase = await supabaseServer();
     const today = getTodayKST();
 
     const { data: activeEvent } = await supabase

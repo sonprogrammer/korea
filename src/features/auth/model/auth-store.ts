@@ -1,6 +1,9 @@
 import { create } from "zustand";
-import { fetchAuthMe, logout } from "@/features/auth/api/auth-api";
+import { kakaoLogin } from "@/features/auth/api/auth-api";
 import type { AuthUser } from "@/shared/types/auth";
+import { supabaseClient } from "@/shared/lib/supabase/client";
+import { getUser } from "@/entities/user/api/getUser";
+
 
 interface AuthState {
   user: AuthUser | null;
@@ -10,7 +13,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
   initialize: () => Promise<void>;
-  signInWithKakao: (redirectPath?: string) => void;
+  signInWithKakao: () => Promise<void>
   signOut: () => Promise<void>;
 }
 
@@ -25,24 +28,30 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   initialize: async () => {
     try {
-      const user = await fetchAuthMe();
-      set({ user, isInitialized: true });
+      const profile = await getUser()
+
+      if (profile) {
+        set({ user: profile, isInitialized: true });
+      } else {
+        set({ user: null, isInitialized: true });
+      }
     } catch {
       set({ user: null, isInitialized: true });
     }
   },
 
-  signInWithKakao: (redirectPath = "/") => {
-    set({ isLoading: true });
-    const params = new URLSearchParams({ next: redirectPath });
-    window.location.href = `/api/auth/kakao?${params.toString()}`;
+  signInWithKakao: async () => {
+    kakaoLogin()
   },
 
   signOut: async () => {
+    const supabase = supabaseClient();
     set({ isLoading: true });
     try {
-      await logout();
+      await supabase.auth.signOut();
       set({ user: null });
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
     } finally {
       set({ isLoading: false });
     }

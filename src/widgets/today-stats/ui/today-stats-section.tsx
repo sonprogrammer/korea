@@ -1,12 +1,12 @@
 "use client";
 
-import { memo, useCallback, useState } from "react";
-import { Button, Card, Spin, Statistic, Typography } from "antd";
+import { memo, useCallback } from "react";
+import { Button, Card} from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { useTodayStats } from "@/entities/stats/api/use-today-stats";
 import { formatNumber, formatTodayDate } from "@/shared/lib/format";
-import { Clock } from "@/entities/clock/ui/Clock";
+// import { Clock } from "@/entities/clock/ui/Clock";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale"
 

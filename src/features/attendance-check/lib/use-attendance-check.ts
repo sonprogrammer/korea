@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback} from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { submitAttendance } from "@/entities/attendance/api/attendance-api";
@@ -9,24 +9,30 @@ import { useAuthStore } from "@/features/auth/model/auth-store";
 import { ApiError } from "@/shared/api/fetcher";
 import { QUERY_KEYS } from "@/shared/config/constants";
 import { GeolocationError, getCurrentPosition } from "@/shared/lib/geolocation";
+import { kakaoLogin } from "@/features/auth/api/auth-api";
 
 export function useAttendanceCheck(eventId: string | undefined) {
   const queryClient = useQueryClient();
+  // const [user,setUser] = useState<User | null>(null)
   const user = useAuthStore((s) => s.user);
   const signInWithKakao = useAuthStore((s) => s.signInWithKakao);
-  const { isChecking, setChecking, markPendingAttendance, clearPendingAttendance } =
-    useAttendanceStore();
+  const { isChecking, setChecking, markPendingAttendance, clearPendingAttendance } = useAttendanceStore();
+
+
+  
 
   const executeCheck = useCallback(async () => {
     if (!eventId) {
-      message.error("현재 진행 중인 운동이 없습니다.");
+      // message.error("현재 진행 중인 운동이 없습니다.")
       return;
     }
 
     if (!user) {
       markPendingAttendance();
-      signInWithKakao("/");
+      // signInWithKakao();
+      kakaoLogin()
       return;
+      
     }
 
     setChecking(true);
@@ -78,12 +84,11 @@ export function useAttendanceCheck(eventId: string | undefined) {
   }, [
     eventId,
     user,
-    signInWithKakao,
     markPendingAttendance,
     clearPendingAttendance,
     setChecking,
     queryClient,
   ]);
 
-  return { executeCheck, isChecking };
+  return { executeCheck, isChecking, user };
 }

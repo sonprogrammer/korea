@@ -11,39 +11,40 @@ export function AttendanceHistoryList() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="!rounded-2xl !border-0 !shadow-sm" styles={{ body: { padding: 20 } }}>
-        <Title level={5} className="!mb-1">
+      <Card className="rounded-2xl! border-0! shadow-sm!" styles={{ body: { padding: 20 } }}>
+        <Title level={5} className="mb-1!">
           내 인증 기록
         </Title>
-        <Text type="secondary" className="!text-xs">
+        <Text type="secondary" className="text-xs!">
           GPS 위치 인증을 통과한 참여 인증 기록입니다.
         </Text>
       </Card>
 
       <Spin spinning={isLoading}>
         {!data?.items.length ? (
-          <Card className="!rounded-2xl !border-0 !shadow-sm">
+          <Card className="rounded-2xl! border-0! shadow-sm!">
             <Empty description="인증 기록이 없습니다." />
           </Card>
         ) : (
+          <div className="h-full overflow-y-auto pr-1">
           <List
             dataSource={data.items}
             renderItem={(item) => (
               <Card
                 key={item.id}
-                className="!mb-3 !rounded-2xl !border-0 !shadow-sm"
+                className="mb-3! rounded-2xl! border-0! shadow-sm!"
                 styles={{ body: { padding: 16 } }}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <Text strong className="!text-base">
+                    <Text strong className="text-base!">
                       {item.eventTitle}
                     </Text>
                     <div className="mt-1">
-                      <Text type="secondary" className="!text-sm">
+                      <Text type="secondary" className="text-sm!">
                         {item.date}
                       </Text>
-                      <Text type="secondary" className="!ml-2 !text-sm">
+                      <Text type="secondary" className="ml-2! text-sm!">
                         {item.time}
                       </Text>
                     </div>
@@ -51,7 +52,7 @@ export function AttendanceHistoryList() {
                   <Tag
                     icon={<CheckCircleFilled />}
                     color="success"
-                    className="!mr-0"
+                    className="mr-0!"
                   >
                     인증 완료
                   </Tag>
@@ -59,6 +60,7 @@ export function AttendanceHistoryList() {
               </Card>
             )}
           />
+          </div>
         )}
       </Spin>
     </div>

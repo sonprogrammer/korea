@@ -1,7 +1,7 @@
-import { createClient } from "@/shared/lib/supabase/client";
+import { supabaseClient } from "@/shared/lib/supabase/client";
 
 export const getTopRecord = async() =>  {
-    const supabase = createClient()
+    const supabase = supabaseClient()
 
     const { data: activeEvent } = await supabase.from('events').select('id').eq('status', 'active').order('created_at', { ascending: false})
                                                 .limit(1).maybeSingle()

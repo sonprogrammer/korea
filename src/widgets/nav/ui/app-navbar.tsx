@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
     { href: "/", label: "홈", icon: <HomeOutlined /> },
     { href: "/stats", label: "통계", icon: <BarChartOutlined /> },
-    { href: "/my-attendance", label: "내 참여 기록", icon: <UserOutlined />, disabled: true },
+    { href: "/my-attendance", label: "내 참여 기록", icon: <UserOutlined /> },
 ];
 
 export function AppNavbar() {
@@ -45,17 +45,6 @@ export function AppNavbar() {
                         </div>
                     )
 
-                    if (item.disabled) {
-                        return (
-                            <button
-                                key={item.href}
-                                onClick={developing}
-                                className="flex-1 cursor-not-allowed"
-                            >
-                                {content}
-                            </button>
-                        );
-                    }
 
                     return (
                         <Link

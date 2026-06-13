@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
-import { getSessionFromCookies } from "@/shared/lib/auth/session";
+// import { getSessionFromCookies } from "@/shared/lib/auth/session";
 import { formatDateKST, formatTimeKST } from "@/shared/lib/format";
 import { createAdminClient } from "@/shared/lib/supabase/admin";
 import type { MyAttendanceResponse } from "@/shared/types/api";
+import { supabaseServer } from "@/shared/lib/supabase/server";
 
 export async function GET() {
   try {
-    const user = await getSessionFromCookies();
+    // const user = await getSessionFromCookies();
+    const supabase = await supabaseServer()
+    const { data: {user}, error: authError} = await supabase.auth.getUser()
+
+    if (authError || !user) {
+          return NextResponse.json(
+            { error: "로그인이 필요합니다.", code: "UNAUTHORIZED" },
+            { status: 401 },
+          );
+        }
 
     if (!user) {
       return NextResponse.json(
@@ -15,9 +25,9 @@ export async function GET() {
       );
     }
 
-    const supabase = createAdminClient();
+    const adminSupabase = createAdminClient();
 
-    const { data, error } = await supabase
+    const { data, error } = await adminSupabase
       .from("attendance")
       .select(
         `

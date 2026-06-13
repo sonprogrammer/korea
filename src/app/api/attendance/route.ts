@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
-import { getSessionFromCookies } from "@/shared/lib/auth/session";
+// import { getSessionFromCookies } from "@/shared/lib/auth/session";
 import { createAdminClient } from "@/shared/lib/supabase/admin";
 import { isWithinRadius } from "@/shared/lib/haversine";
 import type { AttendanceRequest, AttendanceResponse } from "@/shared/types/api";
+import { supabaseServer } from "@/shared/lib/supabase/server";
 
 export async function POST(request: Request) {
   // console.log('request', request)
   try {
-    const user = await getSessionFromCookies();
+    const supabase = await supabaseServer()
 
-    if (!user) {
+    const { data: {user}, error: authError} = await supabase.auth.getUser()
+
+
+    if (authError || !user) {
       return NextResponse.json(
         { error: "로그인이 필요합니다.", code: "UNAUTHORIZED" },
         { status: 401 },
@@ -26,9 +30,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = createAdminClient();
+    const adminSupabase = createAdminClient();
 
-    const { data: event, error: eventError } = await supabase
+    const { data: event, error: eventError } = await adminSupabase
       .from("events")
       .select("*")
       .eq("id", eventId)
@@ -60,7 +64,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data: attendance, error: insertError } = await supabase
+    const { data: attendance, error: insertError } = await adminSupabase
       .from("attendance")
       .insert({
         user_id: user.id,

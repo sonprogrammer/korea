@@ -1,8 +1,8 @@
-import { createClient } from "@/shared/lib/supabase/client";
+import { supabaseClient } from "@/shared/lib/supabase/client";
 import type { Event } from "@/shared/types/database";
 
 export async function fetchActiveEvent(): Promise<Event | null> {
-  const supabase = createClient();
+  const supabase = supabaseClient();
   const { data, error } = await supabase
     .from("events")
     .select("*")

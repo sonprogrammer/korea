@@ -1,6 +1,7 @@
 export interface AuthUser {
   id: string;
-  kakaoId: string;
+  created_at: string;
+  email: string
   nickname: string;
 }
 
