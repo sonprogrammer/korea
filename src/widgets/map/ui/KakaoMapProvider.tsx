@@ -17,7 +17,6 @@ export function KakaoMapProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.kakao && window.kakao.maps) {
-            console.log("🍏 [Provider] 사파리 메모리에서 이미 로드된 kakao 발견! 강제 구동 시도.");
             window.kakao.maps.load(() => {
                 setIsLoaded(true);
             });
@@ -25,7 +24,6 @@ export function KakaoMapProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const handleScriptLoad = () => {
-        console.log("🤖 [Provider] 스크립트 최초 로드 성공 (onLoad)");
         if (window.kakao && window.kakao.maps) {
             window.kakao.maps.load(() => {
                 setIsLoaded(true);
