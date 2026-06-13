@@ -16,6 +16,7 @@ import { HomeGuidModal } from "@/widgets/popup/ui/HomeGuidModal";
 
 export function HomePage() {
   const [popup, setPopup] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const { data: event, isLoading: eventLoading } = useActiveEvent();
   const { executeCheck, isChecking, user } = useAttendanceCheck(event?.id);
@@ -24,6 +25,7 @@ export function HomePage() {
   const autoExecutedRef = useRef(false)
 
   useEffect(() => {
+    setIsMounted(true)
     const isHidden = localStorage.getItem('hide_home_guide')
     if(!isHidden){
       setPopup(true)
@@ -38,6 +40,18 @@ export function HomePage() {
     clearPendingAttendance();
     void executeCheck();
   }, [isInitialized, hasPendingAttendance, clearPendingAttendance, executeCheck, user]);
+
+  if (!isMounted) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col gap-3">
+          <div className="h-32 w-full animate-pulse rounded-2xl bg-gray-100" />
+          <div className="h-64 w-full animate-pulse rounded-2xl bg-gray-100" />
+        </div>
+      </AppLayout>
+    );
+  }
+  
 
   return (
     <AppLayout>

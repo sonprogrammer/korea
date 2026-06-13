@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, Col, Row, Typography } from "antd";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, formatNumber, getTodayKST } from "@/shared/lib/format";
@@ -10,28 +10,51 @@ import { addDays, format, subDays } from "date-fns";
 const { Title } = Typography;
 
 export function DailyStatsChart() {
-  const now = useMemo(() => new Date(), [])
+  const [isMounted, setIsMounted] = useState(false);
+  // const now = useMemo(() => new Date(), [])
+  const now = useMemo(() => {
+    return new Date(getTodayKST().replace(/-/g, "/"));
+  }, []);
 
-const [endDate, setEndDate] = useState(() => new Date());
+  // const [endDate, setEndDate] = useState(() => new Date());
+  const [endDate, setEndDate] = useState<Date>(() => {
+    return new Date(getTodayKST().replace(/-/g, "/"))
+  });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  // const formattedEndDate = useMemo(() => {
+  //   try {
+
+  //     if (isNaN(endDate.getTime())) {
+  //       return format(new Date(), 'yyyy-MM-dd');
+  //     }
+  //     return format(endDate, 'yyyy-MM-dd');
+  //   } catch (e) {
+  //     return format(new Date(), 'yyyy-MM-dd');
+  //   }
+  // }, [endDate]);
+
   const formattedEndDate = useMemo(() => {
-  try {
-
-    if (isNaN(endDate.getTime())) {
-      return format(new Date(), 'yyyy-MM-dd');
+    try {
+      if (!endDate || isNaN(endDate.getTime())) {
+        return getTodayKST();
+      }
+      return format(endDate, 'yyyy-MM-dd');
+    } catch (e) {
+      return getTodayKST();
     }
-    return format(endDate, 'yyyy-MM-dd');
-  } catch (e) {
-    return format(new Date(), 'yyyy-MM-dd'); 
-  }
-}, [endDate]);
+  }, [endDate]);
+
   const { data, isFetching } = useDailyStats(formattedEndDate);
 
   const chartData = useMemo(
     () =>
       (data?.items ?? []).map((item) => ({
         date: formatChartDate(item.date),
-        count: item.count,
-        cumulative: item.cumulative,
+        count: Number(item.count) || 0,
+        cumulative: Number(item.cumulative) || 0,
       })),
     [data?.items],
   );
