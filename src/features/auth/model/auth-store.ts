@@ -29,6 +29,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   initialize: async () => {
     try {
       const profile = await getUser()
+      // const { data: profile} = useGetUser()
 
       if (profile) {
         set({ user: profile, isInitialized: true });

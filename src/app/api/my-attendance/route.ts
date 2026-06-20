@@ -7,7 +7,6 @@ import { supabaseServer } from "@/shared/lib/supabase/server";
 
 export async function GET() {
   try {
-    // const user = await getSessionFromCookies();
     const supabase = await supabaseServer()
     const { data: {user}, error: authError} = await supabase.auth.getUser()
 

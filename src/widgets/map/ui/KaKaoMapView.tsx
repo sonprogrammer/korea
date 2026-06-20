@@ -3,21 +3,28 @@ import { Map, MapMarker, Circle } from "react-kakao-maps-sdk";
 import { getDistanceKm } from "@/features/location/lib/getDistanceKm"
 import { useUserLocation } from "@/features/location/model/useUserLocation"
 import { TargetCoords } from "@/shared/config/constants"
-import { useRef } from "react";
-import { EnvironmentOutlined } from "@ant-design/icons";
+import { SyncOutlined } from "@ant-design/icons";
+import { App } from "antd";
 
 
 
 export function KaKaoMapView() {
-  const { location } = useUserLocation()
-  const mapRef = useRef<kakao.maps.Map | null>(null)
+  const { location, refreshLocation } = useUserLocation()
 
+  const { message } = App.useApp()
   if (!location) return <div>위치 로딩중...</div>
 
-  const moveToCurrentLocation = () => {
-    if (!mapRef.current) return
-    mapRef.current.setCenter(new window.kakao.maps.LatLng(location.lat, location.lng))
+
+
+  const handleRefresh = async () => {
+    const res = await refreshLocation()
+    if (!res.success) {
+      message.error('위치 정보를 가져올 수 없습니다.')
+    } else {
+      message.success('현재 위치로 갱신되었습니다.')
+    }
   }
+
 
   const distance = getDistanceKm(location, TargetCoords)
   const isInZone = distance <= 0.5
@@ -64,9 +71,8 @@ export function KaKaoMapView() {
           center={location}
           style={{ width: "100%", height: 260, borderRadius: '20px' }}
           level={5}
-          onCreate={(map) => {
-            mapRef.current = map
-          }}
+          draggable={false}
+          zoomable={false}
         >
           {/* //* 내위치 */}
           <MapMarker position={location} />
@@ -84,16 +90,29 @@ export function KaKaoMapView() {
         </Map>
 
         <button
-          onClick={moveToCurrentLocation}
-          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-105"
+          onClick={handleRefresh}
+          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-105 cursor-pointer"
+          title="현재위치로 리프레시"
         >
-          <EnvironmentOutlined className="text-lg text-blue-600" />
+          <SyncOutlined className="text-lg text-blue-600!" />
         </button>
 
       </div>
 
       <div className="px-4 py-3 text-xs text-slate-500">
         GPS 위치는 실시간으로 갱신됩니다. 위치 정확도에 따라 오차가 발생할 수 있습니다.
+      </div>
+      <div className="px-4 py-3 text-xs text-slate-500 bg-slate-50 border-t border-slate-100">
+        <p className="flex items-center gap-1">
+          지도 안정성을 위해 드래그 및 확대는 제한됩니다.
+        </p>
+        <p className="mt-1">
+          내 위치와 마커가 맞지 않으면
+          <span className="inline-flex gap-0.5 items-center px-1.5 py-0.5 mx-1 font-semibold text-blue-600 bg-blue-50 rounded">
+            <SyncOutlined /> 새로고침
+          </span>
+          버튼을 눌러주세요.
+        </p>
       </div>
     </div>
   )

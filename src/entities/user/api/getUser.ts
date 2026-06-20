@@ -6,7 +6,7 @@ export const getUser = async()=> {
     const { data: {user}, error: authError} = await supabase.auth.getUser()
 
     if(authError || !user){
-        console.error('로그인이 필요합니다')
+        console.error('로그인이 필요합니다 from getUser')
         return null
     }
 

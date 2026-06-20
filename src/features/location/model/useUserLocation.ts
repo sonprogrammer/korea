@@ -1,3 +1,4 @@
+import { getCurrentPosition } from "@/shared/lib/geolocation";
 import { useEffect, useState } from "react";
 
 export function useUserLocation() {
@@ -11,21 +12,29 @@ export function useUserLocation() {
 //   lng: 127.0728})
 
 
-    useEffect(() => {
-        // * 움직이면서 위치 갱신
-        const watchId = navigator.geolocation.watchPosition((pos) => {
-            setLocation({
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude
-            })
-        })
-        
-        return () => {
-            navigator.geolocation.clearWatch(watchId)
+
+    const refreshLocation = async() => {
+        try {
+            const pos = await getCurrentPosition()
+            setLocation({lat: pos.latitude, lng: pos.longitude})
+            return {success : true}
+        } catch (error) {
+            console.error('위치 갱신 실패', error)
+            return { success: false, error}
         }
-    }, [])
+    }
 
 
-    return { location }
+    useEffect(() => {
+        getCurrentPosition().then(res => {
+            setLocation({
+                lat:res.latitude,
+                lng: res.longitude
+            })
+        }).catch(console.error);
+    }, []);
+
+
+    return { location, refreshLocation }
     
 }

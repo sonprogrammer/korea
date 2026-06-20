@@ -1,26 +1,17 @@
 'use client'
 
 import { BarChartOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { App } from "antd";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
     { href: "/", label: "홈", icon: <HomeOutlined /> },
-    { href: "/stats", label: "통계", icon: <BarChartOutlined /> },
-    { href: "/my-attendance", label: "내 참여 기록", icon: <UserOutlined /> },
+    { href: "/stats", label: "참가자 수", icon: <BarChartOutlined /> },
+    { href: "/my-attendance", label: "참여 기록", icon: <UserOutlined /> },
 ];
 
 export function AppNavbar() {
     const pathname = usePathname()
-    const { message } = App.useApp()
-
-    const developing = () => {
-        message.error({
-            key: 'developing',
-            content: '빠른 시일내에 개발 완료 하겠습니다.'
-        })
-    }
 
     return (
         <div className="sticky bottom-0 z-50 border-t bg-white">

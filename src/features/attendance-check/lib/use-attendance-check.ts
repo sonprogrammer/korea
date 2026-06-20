@@ -13,9 +13,7 @@ import { kakaoLogin } from "@/features/auth/api/auth-api";
 
 export function useAttendanceCheck(eventId: string | undefined) {
   const queryClient = useQueryClient();
-  // const [user,setUser] = useState<User | null>(null)
   const user = useAuthStore((s) => s.user);
-  const signInWithKakao = useAuthStore((s) => s.signInWithKakao);
   const { isChecking, setChecking, markPendingAttendance, clearPendingAttendance } = useAttendanceStore();
 
 
