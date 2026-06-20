@@ -42,7 +42,7 @@ export function MyAttendancePage() {
             setRequireLogin(false)
             router.replace('/')
         }}
-        onLoginAndCheck={() => kakaoLogin()}
+        onLogin={kakaoLogin}
       />
     </AppLayout>
   );
