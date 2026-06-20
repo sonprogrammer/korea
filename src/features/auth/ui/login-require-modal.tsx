@@ -1,5 +1,6 @@
 'use client'
 
+import { kakaoLogin } from "@/features/auth/api/auth-api"
 import { Button, Modal } from "antd"
 
 
@@ -23,7 +24,7 @@ export function LoginRequireModal({ isOpen, onClose, onLogin }: LoginRequireModa
                         취소
                     </Button>
                     <Button key='login' type="primary"
-                        onClick={() => onLogin()}
+                        onClick={onLogin}
                         className="bg-yellow-400! font-bold! text-neutral-900! shadow-none! hover:bg-[#FDD800]!"
                     >
                         카카오 로그인

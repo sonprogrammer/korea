@@ -13,6 +13,7 @@ import { KaKaoMapView } from "@/widgets/map/ui/KaKaoMapView";
 import { KakaoMapProvider } from "@/widgets/map/ui/KakaoMapProvider";
 import { HomeGuidModal } from "@/widgets/popup/ui/HomeGuidModal";
 import { LoginRequireModal } from "@/features/auth/ui/login-require-modal";
+import { kakaoLogin } from "@/features/auth/api/auth-api";
 
 
 export function HomePage() {
@@ -91,6 +92,7 @@ export function HomePage() {
         onClose={() => setLoginRequire(false)}
         onLogin={ () => {
             setLoginRequire(false)
+            kakaoLogin()
         }}
       />
       
