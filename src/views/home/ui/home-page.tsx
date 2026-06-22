@@ -9,11 +9,13 @@ import { AppLayout } from "@/widgets/app-layout/ui/app-layout";
 import { AttendanceButton } from "@/widgets/attendance-button/ui/attendance-button";
 // import { EventInfoCard } from "@/widgets/event-info/ui/event-info-card";
 import { TodayStatsSection } from "@/widgets/today-stats/ui/today-stats-section";
-import { KaKaoMapView } from "@/widgets/map/ui/KaKaoMapView";
-import { KakaoMapProvider } from "@/widgets/map/ui/KakaoMapProvider";
+// import { KaKaoMapView } from "@/widgets/map/ui/KaKaoMapView";
+// import { KakaoMapProvider } from "@/widgets/map/ui/KakaoMapProvider";
 import { HomeGuidModal } from "@/widgets/popup/ui/HomeGuidModal";
 import { LoginRequireModal } from "@/features/auth/ui/login-require-modal";
 import { kakaoLogin } from "@/features/auth/api/auth-api";
+// import { useGetCrowedData } from "@/entities/crowd/model/useGetCrowedData";
+import { CrowdStatusWidget } from "@/widgets/crowd/ui/CrowdStatusWidget";
 
 
 export function HomePage() {
@@ -29,22 +31,24 @@ export function HomePage() {
 
   // * 로그인을 안했으면 로그인이 필요한 서비스라고 모달 띄워주기
   const handleClickAttend = () => {
-    if(!user){
+    if (!user) {
       setLoginRequire(true)
       return
     }
     executeCheck()
   }
-  
+
   const autoExecutedRef = useRef(false)
 
   useEffect(() => {
     setIsMounted(true)
     const isHidden = localStorage.getItem('hide_home_guide')
-    if(!isHidden){
+    if (!isHidden) {
       setPopup(true)
     }
-  },[])
+  }, [])
+
+
 
   useEffect(() => {
     if (!isInitialized || autoExecutedRef.current) return;
@@ -65,37 +69,42 @@ export function HomePage() {
       </AppLayout>
     );
   }
-  
+
 
   return (
     <AppLayout>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
+        {/* 실시간 인구 */}
+        <div className="space-y-2">
+          <h2 className="text-sm font-semibold tracking-widest text-white/40 uppercase">
+            현재 현황
+          </h2>
+          <CrowdStatusWidget />
+        </div>
+
         <TodayStatsSection />
-        <KakaoMapProvider>
-          <KaKaoMapView />
-        </KakaoMapProvider>
-        {/* <EventInfoCard event={event} isLoading={eventLoading} /> */}
       </div>
+
       <AttendanceButton
         onClick={handleClickAttend}
         loading={isChecking}
         disabled={!event}
       />
 
-      <HomeGuidModal 
-        isOpen={popup} 
-        onClose={() => setPopup(false)} 
+      <HomeGuidModal
+        isOpen={popup}
+        onClose={() => setPopup(false)}
       />
-    
-      <LoginRequireModal 
+
+      <LoginRequireModal
         isOpen={loginRequire}
         onClose={() => setLoginRequire(false)}
-        onLogin={ () => {
-            setLoginRequire(false)
-            kakaoLogin()
+        onLogin={() => {
+          setLoginRequire(false)
+          kakaoLogin()
         }}
       />
-      
     </AppLayout>
+
   );
 }

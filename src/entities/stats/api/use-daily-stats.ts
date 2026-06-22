@@ -17,6 +17,7 @@ export function useDailyStats(endDate: string) {
   return useQuery({
     queryKey: [...QUERY_KEYS.dailyStats, safeEndDate],
     queryFn: () => fetchDailyStats(safeEndDate),
+    placeholderData: (previousData) => previousData,
     staleTime: 60_000,
   });
 }

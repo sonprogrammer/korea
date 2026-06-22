@@ -14,40 +14,65 @@ export function AppNavbar() {
     const pathname = usePathname()
 
     return (
-        <div className="sticky bottom-0 z-50 border-t bg-white">
-            <nav className="flex h-16">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href;
+        <div className="sticky bottom-0 z-50 border-t border-white/6 bg-[#111118]">
+    <nav className="flex h-16">
+      {navItems.map((item) => {
+        const isActive = pathname === item.href;
 
-                    const content = (
-                        <div
-                            className={`flex flex-1 flex-col items-center h-full justify-center gap-1 transition-colors hover:bg-red-100 ${isActive
-                                    ? "text-red-500"
-                                    : "text-slate-500"
-                                }`}
-                        >
-                            <span className="text-lg">
-                                {item.icon}
-                            </span>
+        return (
+          <Link key={item.href} href={item.href} className="flex-1">
+            <div
+              className={`flex flex-1 flex-col items-center h-full justify-center gap-1 transition-colors
+                ${isActive ? "text-white" : "text-white/30 hover:text-white/60"}
+              `}
+            >
+              <span className={`text-lg transition-transform ${isActive ? "scale-110" : ""}`}>
+                {item.icon}
+              </span>
+              <span className={`text-[11px] font-medium ${isActive ? "font-bold" : ""}`}>
+                {item.label}
+              </span>
+             
+            </div>
+          </Link>
+        );
+      })}
+    </nav>
+  </div>
+        // <div className="sticky bottom-0 z-50 border-t bg-white">
+        //     <nav className="flex h-16">
+        //         {navItems.map((item) => {
+        //             const isActive = pathname === item.href;
 
-                            <span className="text-[11px] font-medium">
-                                {item.label}
-                            </span>
-                        </div>
-                    )
+        //             const content = (
+        //                 <div
+        //                     className={`flex flex-1 flex-col items-center h-full justify-center gap-1 transition-colors hover:bg-red-100 ${isActive
+        //                             ? "text-red-500"
+        //                             : "text-slate-500"
+        //                         }`}
+        //                 >
+        //                     <span className="text-lg">
+        //                         {item.icon}
+        //                     </span>
+
+        //                     <span className="text-[11px] font-medium">
+        //                         {item.label}
+        //                     </span>
+        //                 </div>
+        //             )
 
 
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className="flex-1"
-                        >
-                            {content}
-                        </Link>
-                    );
-                })}
-            </nav>
-        </div>
+        //             return (
+        //                 <Link
+        //                     key={item.href}
+        //                     href={item.href}
+        //                     className="flex-1"
+        //                 >
+        //                     {content}
+        //                 </Link>
+        //             );
+        //         })}
+        //     </nav>
+        // </div>
     )
 }

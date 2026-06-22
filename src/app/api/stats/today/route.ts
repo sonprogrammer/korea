@@ -18,22 +18,29 @@ export async function GET() {
 
     if (!activeEvent) {
       const response: TodayStatsResponse = {
-        count: 0,
+        todayCount: 0,
         eventId: null,
+        totalCount: 0
       };
       return NextResponse.json(response);
     }
 
-    const { data: dailyStat } = await supabase
-      .from("daily_stats")
-      .select("count")
-      .eq("event_id", activeEvent.id)
-      .eq("stat_date", today)
-      .maybeSingle();
+    // * 오늘 누적
+    const { data: todayStats } = await supabase.rpc('get_today_stats')
+
+    //*전체 누적
+    const { data: totalData } = await supabase.rpc('get_total_cumulative_count');
+
+    
+
+    const todayCount = Array.isArray(todayStats) ? todayStats[0].count : todayStats?.count
+    const totalCount = totalData ?? 0
+
 
     const response: TodayStatsResponse = {
-      count: dailyStat?.count ?? 0,
+      todayCount: Number(todayCount) ?? 0,
       eventId: activeEvent.id,
+      totalCount: Number(totalCount)
     };
 
     return NextResponse.json(response);

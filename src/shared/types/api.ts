@@ -1,6 +1,7 @@
 export interface TodayStatsResponse {
-  count: number;
+  todayCount: number;
   eventId: string | null;
+  totalCount: number;
 }
 
 export interface DailyStatItem {

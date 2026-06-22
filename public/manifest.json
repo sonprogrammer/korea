@@ -1,7 +1,7 @@
 {
   "name": "자유 민주주의",
   "short_name": "자유민주화운동",
-  "description": "잠실 현장 GPS 위치 인증을 통한 참여 인증 서비스. 실제 인원 수가 아닌 위치 인증 통과 수만 집계합니다.",
+  "description": "올림픽공원 GPS 위치 인증을 통한 참여 인증 서비스. 실제 인원 수가 아닌 위치 인증 통과 수만 집계합니다.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -24,14 +24,14 @@
       "sizes": "1284x2242",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "멍패스 모바일 화면"
+      "label": "모바일 화면"
     },
     {
       "src": "/desktop.png",
       "sizes": "1096x721",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "멍패스 데스크톱 화면"
+      "label": "데스크톱 화면"
     }
   ]
 }

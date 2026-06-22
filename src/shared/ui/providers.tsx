@@ -8,14 +8,6 @@ import koKR from "antd/locale/ko_KR";
 import { makeQueryClient } from "@/shared/api/query-client";
 import { AuthInitializer } from "@/features/auth/ui/auth-initializer";
 
-const theme = {
-  token: {
-    colorPrimary: "#1a56db",
-    borderRadius: 12,
-    fontFamily:
-      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  },
-};
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => makeQueryClient());
@@ -23,7 +15,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AntdRegistry>
       <QueryClientProvider client={queryClient}>
-        <ConfigProvider locale={koKR} theme={theme}>
+        <ConfigProvider
+          theme={{
+            components: {
+              Modal: {
+                contentBg: "#111118",
+                headerBg: "#111118",
+                footerBg: "#111118",
+                titleColor: "#ffffff",
+                borderRadius: 12,
+                colorText: "rgba(255,255,255,0.6)",
+                colorBorder: "rgba(255,255,255,0.5)"
+              },
+            },
+          }}
+          locale={koKR} >
           <App>
             <AuthInitializer />
             {children}

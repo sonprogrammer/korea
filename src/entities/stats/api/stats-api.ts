@@ -11,5 +11,6 @@ export async function fetchTodayStats(): Promise<TodayStatsResponse> {
 
 export async function fetchDailyStats(endDate: string): Promise<DailyStatsResponse> {
   const finalEndDate = !endDate || endDate.includes("NaN") ? getTodayKST() : endDate;
+  
   return apiFetch<DailyStatsResponse>(`/api/stats/daily?endDate=${finalEndDate}`);
 }

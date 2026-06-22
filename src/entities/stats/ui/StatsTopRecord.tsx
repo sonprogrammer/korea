@@ -13,28 +13,29 @@ export function StatsTopRecord() {
         : "-";
 
     if (isPending) {
-        return <div className="mt-6 h-21.5 animate-pulse bg-slate-50 rounded-2xl" />;
+        return <div className="mt-6 h-21 animate-pulse bg-white/5 rounded-2xl" />
     }
 
     return (
-        <div className="mt-6 grid grid-cols-2 gap-3 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            <div className="flex flex-col gap-1 bg-white rounded-xl p-3 shadow-sm">
-                <span className="text-[11px] font-semibold text-slate-400 tracking-tight flex items-center gap-1">
+        <div className="mt-6 grid grid-cols-2 gap-3 bg-white/5 rounded-2xl p-4 border border-white/8">
+            <div className="flex flex-col gap-1 bg-white/5 rounded-xl p-3">
+                <span className="text-[11px] font-semibold text-white/30 tracking-tight">
                     최고 참여일
                 </span>
-                <span className="text-[14px] font-bold text-slate-800">
+                <span className="text-[14px] font-bold text-white">
                     {displayDate}
                 </span>
             </div>
 
-            <div className="flex flex-col gap-1 bg-rose-50/50 rounded-xl p-3 border border-rose-100/50">
-                <span className="text-[11px] font-semibold text-rose-400 tracking-tight flex items-center gap-1">
+            <div className="flex flex-col gap-1 bg-red-500/10 rounded-xl p-3 border border-red-500/15">
+                <span className="text-[11px] font-semibold text-red-400/70 tracking-tight">
                     최다 참가 인원
                 </span>
-                <span className="text-[14px] font-black text-rose-600">
+                <span className="text-[14px] font-black text-red-400">
                     {displayCount}
                 </span>
             </div>
         </div>
+
     )
 }

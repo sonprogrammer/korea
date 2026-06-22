@@ -3,10 +3,8 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { supabaseServer } from "@/shared/lib/supabase/server";
-import { KOREA_TIMEZONE } from "@/shared/config/constants";
 import type { DailyStatsResponse } from "@/shared/types/api";
 import { format, subDays } from "date-fns";
-import { ko } from "date-fns/locale";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,9 +14,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const EndDate = searchParams.get('endDate')
 
+
     const now = new Date()
     const kstOffset = 9 * 60 * 60 * 1000
     const todayKST = new Date(now.getTime() + kstOffset)
+    const todayStr = format(todayKST, 'yyyy-MM-dd')
 
     const baseDate = EndDate || format(todayKST, 'yyyy-MM-dd')
 
@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
       .limit(1)
       .maybeSingle();
 
+      console.log('activeenvetn', activeEvent)
     if (!activeEvent) {
       const response: DailyStatsResponse = {
         items: [],
@@ -74,21 +75,27 @@ export async function GET(request: NextRequest) {
       .maybeSingle();
 
     //* 7일동안 토탈 누적 
+    const statsMap = new Map(stats?.map(s => [s.stat_date, s.count]) || []);
+
+    const items = [];
     let cumulative = 0;
-    const items = (stats ?? []).map((stat) => {
-      cumulative += stat.count;
-      return {
-        date: stat.stat_date,
-        count: stat.count,  //당일 인증수
-        cumulative, //오늘까지 누적 인증수
-      };
-    });
+    for (let i = 6; i >= 0; i--) {
+      const date = format(subDays(new Date(endDate), i), 'yyyy-MM-dd');
+      const count = statsMap.get(date) || 0; // 데이터 없으면 0
+      cumulative += count;
+
+      items.push({
+        date,
+        count,
+        cumulative
+      });
+    }
 
     const response: DailyStatsResponse = {
       items,
       totalCumulative: cumulative,
       hasPrev: !!prevCheck,
-      hasNext: !!nextCheck,
+      hasNext: endDate < todayStr,
     };
 
     return NextResponse.json(response);

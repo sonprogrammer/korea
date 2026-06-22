@@ -39,7 +39,7 @@ export function KaKaoMapView() {
       {/* //*상단 정보 영역 */}
       <div className="flex items-center justify-between px-4 py-3">
         <div>
-          <p className="text-xs text-slate-500">잠실 주경기장까지</p>
+          <p className="text-xs text-slate-500">올림픽공원까지</p>
           <p className="mt-1 text-2xl font-bold text-slate-900">
             {distanceText}
           </p>
@@ -76,7 +76,7 @@ export function KaKaoMapView() {
         >
           {/* //* 내위치 */}
           <MapMarker position={location} />
-          {/* //* 잠실경기장 */}
+          {/* //* 올림픽공원 */}
           <MapMarker position={TargetCoords} />
 
           <Circle
