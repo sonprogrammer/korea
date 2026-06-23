@@ -3,10 +3,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDailyStats } from "@/entities/stats/api/use-daily-stats";
 import { formatChartDate, getTodayKST } from "@/shared/lib/format";
-import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
+// import { DailyStatsLineChart } from "@/entities/stats/ui/DailyStatsLineChart";
 import { addDays, format, subDays } from "date-fns";
 import { TotalAndDailyNumber } from "@/entities/attendance/ui/TotalAndDailyNumber";
 import { LoadingOutlined } from "@ant-design/icons";
+import dynamic from "next/dynamic";
+
+const DailyStatsBarChart = dynamic(
+  () => import('@/entities/stats/ui/DailyStatsLineChart').then((mod) => mod.DailyStatsLineChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-48 items-center justify-center text-white/30 text-sm">
+        <LoadingOutlined /> 차트 로딩 중...
+      </div>
+    )
+  }
+)
 
 
 export function DailyStatsChart() {
@@ -90,7 +103,7 @@ export function DailyStatsChart() {
               <p>데이터 불러오는 중...</p>
             </div>
           ) : chartData && chartData.length > 0 ? (
-            <DailyStatsLineChart
+            <DailyStatsBarChart
               data={chartData}
               handleNext={handleNext}
               handlePrev={handlePrev}
